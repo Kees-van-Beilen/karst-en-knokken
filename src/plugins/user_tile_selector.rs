@@ -1,4 +1,4 @@
-use bevy::{prelude::*, math::vec2, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
+use bevy::{prelude::*, math::{vec2, uvec2}, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
 // use bevy_debug_text_overlay::screen_print;
 
 use crate::{mesh_gen::mesh_hexagon_new};
@@ -23,7 +23,10 @@ impl SelectionPlugin{
 #[derive(Resource)]
 pub struct UserSelectionControl{
     user_selection_frozen:bool,//user input no longer affects position and the camera no longer lerp to the user position
-
+}
+#[derive(Resource,Default)]
+pub struct UserSelection{
+    pub cursor_tile_grid_position:UVec2,
 }
 
 #[derive(Component)]
@@ -34,7 +37,7 @@ impl Plugin for SelectionPlugin {
         // dbg!(self.allow_user_select);
         app.insert_resource(UserSelectionControl{
             user_selection_frozen: !self.allow_user_select,
-        }).add_startup_system(selection_init).add_system(selection_positioning);
+        }).insert_resource(UserSelection::default()).add_startup_system(selection_init).add_system(selection_positioning);
     }
 }
 
@@ -55,7 +58,16 @@ fn selection_init(mut commands:Commands,mut meshes:ResMut<Assets<Mesh>>,mut mate
         ..Default::default()
     }).insert(SelectionObject);
 }
-fn selection_positioning(mut position:Local<Vec2>,mut query:Query<&mut Transform,With<SelectionObject>>,control:Res<UserSelectionControl>,time:Res<Time>,mouse:Res<MousePosition>){
+
+//TODO: split the cursor object and grid logic
+fn selection_positioning(
+    mut position:Local<Vec2>,
+    mut query:Query<&mut Transform,With<SelectionObject>>,
+    mut selection:ResMut<UserSelection>,
+    control:Res<UserSelectionControl>,
+    time:Res<Time>,
+    mouse:Res<MousePosition>
+){
     // screen_print!("pos: {} {}",mouse.get(),control.user_selection_frozen);
     if control.user_selection_frozen {return}
     let Ok(mut transform) = query.get_single_mut() else {return;};
@@ -91,6 +103,9 @@ fn selection_positioning(mut position:Local<Vec2>,mut query:Query<&mut Transform
     
     
     let (x,y) = coords;
+    if x > 0 && y > 0 {
+        selection.cursor_tile_grid_position = uvec2(x as u32, y as u32);
+    }
     // screen_print!("least dist = {} coords = ({},{})",least_dist,x,y);
     let x_offset = if y % 2 == 1 {WIDTH_OFFSET_GRID * 0.5}else{0.0};
     *position = vec2(x as f32 * WIDTH_OFFSET_GRID + x_offset, y as f32 * HEIGHT_OFFSET_GRID);

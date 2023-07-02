@@ -10,7 +10,7 @@ impl Plugin for Input2DPlugin {
 }
 
 #[derive(Resource,Default,Debug)]
-pub struct MousePosition(Vec2);
+pub struct MousePosition(Vec2,Vec2);
 
 
 
@@ -18,6 +18,10 @@ impl MousePosition {
     #[inline]
     pub fn get(&self)->Vec2{
         self.0
+    }
+    #[inline]
+    pub fn get_ui(&self)->Vec2{
+        self.1
     }
     #[inline]
     fn set(&mut self,to:Vec2){
@@ -46,6 +50,9 @@ fn input_system(
     
     let Some(position) = window.cursor_position()
         .and_then(|viewport_position|camera.viewport_to_world_2d(camera_transform, viewport_position)) else {return};
-
+    let Some(mut ui_pos) = window.cursor_position() else {return;};
+    ui_pos.y = (window.height() - ui_pos.y.max(10.0)).max(10.0);
+    ui_pos.x = ui_pos.x.clamp(10.0,window.width()-10.0);
+    mouse_position.1 = ui_pos;
     mouse_position.set(position);
 }

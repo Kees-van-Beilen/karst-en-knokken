@@ -26,6 +26,7 @@ opt-level = 3
 
 [features]
 dev = ["bevy/bevy_dylib","dep:bevy-debug-text-overlay"]
+dev-windows = ["dep:bevy-debug-text-overlay"]
 
 
 

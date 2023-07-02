@@ -1,5 +1,4 @@
 use bevy::{prelude::*, math::vec2, input::mouse::MouseWheel};
-use bevy_debug_text_overlay::screen_print;
 
 use crate::util::extensions::InputExtension;
 

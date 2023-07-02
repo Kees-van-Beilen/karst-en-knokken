@@ -9,6 +9,7 @@ pub struct WorldBuilderPlugin;
 pub struct GameWorld{
     pub image_asset_url:String,
 }
+#[derive(Component)]
 pub struct GameWorldData{
     pub solid_terrain:Vec<bool>,
     pub width:usize,
@@ -32,8 +33,8 @@ fn game_world_init(query:Query<(Entity,&GameWorld),Added<GameWorld>>,mut command
         e.insert(WorldTempTextureHandle(assets.load(&world.image_asset_url)));
     }
 }
-fn game_world_load_texture(mut query:Query<(Entity,&WorldTempTextureHandle,&mut GameWorld)>,mut commands:Commands,mut images:ResMut<Assets<Image>>,mut meshes:ResMut<Assets<Mesh>>,mut materials:ResMut<Assets<ColorMaterial>>){
-    for (entity,texture_handle,mut world) in query.iter_mut() {
+fn game_world_load_texture(mut query:Query<(Entity,&WorldTempTextureHandle)>,mut commands:Commands,mut images:ResMut<Assets<Image>>,mut meshes:ResMut<Assets<Mesh>>,mut materials:ResMut<Assets<ColorMaterial>>){
+    for (entity,texture_handle) in query.iter_mut() {
         let Some(texture) = images.remove(&texture_handle.0) else {continue;};
         // images.remove(handle)
         let dynamic_texture = texture.try_into_dynamic().unwrap();
