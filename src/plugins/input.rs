@@ -12,6 +12,8 @@ impl Plugin for Input2DPlugin {
 #[derive(Resource,Default,Debug)]
 pub struct MousePosition(Vec2);
 
+
+
 impl MousePosition {
     #[inline]
     pub fn get(&self)->Vec2{
