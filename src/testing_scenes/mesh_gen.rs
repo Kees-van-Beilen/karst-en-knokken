@@ -2,7 +2,7 @@
 
 use bevy::{prelude::{App, Commands, Assets, Mesh, ResMut, Color, Transform, Quat}, sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle}};
 
-use crate::{plugins::{user_camera_controller::CameraPlugin, input::Input2DPlugin, user_tile_selector::SelectionPlugin}, mesh_gen::{mesh_box_new, mesh_ngon_new, mesh_hexagon_new}};
+use crate::{plugins::{user_camera_controller::CameraPlugin, input::Input2DPlugin, user_tile_selector::SelectionPlugin, world_builder::{WorldBuilderPlugin, GameWorld}}, mesh_gen::{mesh_box_new, mesh_ngon_new, mesh_hexagon_new}};
 
 pub fn main(app:&mut App){
     app.add_plugin(CameraPlugin::new_user_controlled()).add_startup_system(start);
@@ -13,6 +13,14 @@ pub fn main2(app:&mut App){
         .add_plugin(Input2DPlugin)
         .add_plugin(SelectionPlugin::new_allow_selection())
         .add_startup_system(start_grid);
+}
+pub fn main3(app:&mut App){
+    app
+        .add_plugin(CameraPlugin::new_user_controlled())
+        .add_plugin(Input2DPlugin)
+        .add_plugin(WorldBuilderPlugin)
+        .add_plugin(SelectionPlugin::new_allow_selection())
+        .add_startup_system(start_world_builder);
 }
 
 pub fn start(mut commands:Commands,mut meshes:ResMut<Assets<Mesh>>,mut materials:ResMut<Assets<ColorMaterial>>){
@@ -73,4 +81,10 @@ pub fn start_grid(mut commands:Commands,mut meshes:ResMut<Assets<Mesh>>,mut mate
             });
         }
     }
+}
+
+pub fn start_world_builder(mut commands:Commands){
+    commands.spawn_empty().insert(GameWorld{
+        image_asset_url: "map_image.png".to_string()
+    });
 }

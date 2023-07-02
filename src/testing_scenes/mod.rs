@@ -8,6 +8,7 @@ pub fn pick_scene(name:&str,app_ref:&mut App){
     match name {
         "mesh_gen1"=>mesh_gen::main(app_ref),
         "mesh_gen2"=>mesh_gen::main2(app_ref),
+        "mesh_gen3"=>mesh_gen::main3(app_ref),
         e=>panic!("no test scene named: {e}")
     };
 }

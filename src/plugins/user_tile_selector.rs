@@ -1,7 +1,7 @@
 use bevy::{prelude::*, math::vec2, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
-use bevy_debug_text_overlay::screen_print;
+// use bevy_debug_text_overlay::screen_print;
 
-use crate::{util::extensions::InputExtension, mesh_gen::mesh_hexagon_new};
+use crate::{mesh_gen::mesh_hexagon_new};
 
 use super::input::MousePosition;
 
@@ -39,9 +39,9 @@ impl Plugin for SelectionPlugin {
 }
 
 //sin(1/3*pi)
-const WIDTH_OFFSET_GRID:f32 = 0.86602540378;
+pub const WIDTH_OFFSET_GRID:f32 = 0.86602540378;
 //1-cos(1/3*pi)*0.5
-const HEIGHT_OFFSET_GRID:f32 = 0.75;
+pub const HEIGHT_OFFSET_GRID:f32 = 0.75;
 
 
 fn selection_init(mut commands:Commands,mut meshes:ResMut<Assets<Mesh>>,mut materials:ResMut<Assets<ColorMaterial>>){
